@@ -1,12 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../api/apiClient";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [showProfile, setShowProfile] = useState(false); // State to control profile visibility
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false); // Loading state for users
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
@@ -15,7 +17,7 @@ const Dashboard = () => {
         navigate("/login");
       } else {
         try {
-          const res = await axios.get("http://localhost:3000/api/users", {
+          const res = await apiClient.get("/users", {
             headers: {
               authorization: `Bearer ${token}`,
             },
@@ -31,8 +33,9 @@ const Dashboard = () => {
   }, [navigate]);
 
   const getAllUser = async () => {
+    setIsLoadingUsers(true); // Start loading
     try {
-      const data = await axios.get("http://localhost:3000/api/users/getALLUsers", {
+      const data = await apiClient.get("/users/getALLUsers", {
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -40,6 +43,8 @@ const Dashboard = () => {
       setUsers(data.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
+    } finally {
+      setIsLoadingUsers(false); // End loading
     }
   };
 
@@ -70,7 +75,7 @@ const Dashboard = () => {
               onClick={() => getAllUser()}
               className="mt-2 px-5 rounded-md py-2 bg-blue-500 hover:scale-95 hover:font-semibold transition-all duration-200"
             >
-              View All Users
+              {isLoadingUsers ? "Loading..." : "View All Users"} {/* Show loading text */}
             </button>
           </ul>
         </div>
@@ -110,12 +115,16 @@ const Dashboard = () => {
       </button>
 
       {user.role === "Admin" &&
-        users.length > 0 &&
-        users.map((user, key) => (
-          <div key={key} className="bg-[#333] shadow-md p-4 rounded mb-4 mt-4">
-            <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-            <p>Email: {user.email}</p>
-          </div>
+        (isLoadingUsers ? ( // Show loading state for users
+          <div className="text-center text-white mt-4">Loading users...</div>
+        ) : (
+          users.length > 0 &&
+          users.map((user, key) => (
+            <div key={key} className="bg-[#333] shadow-md p-4 rounded mb-4 mt-4">
+              <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
+              <p>Email: {user.email}</p>
+            </div>
+          ))
         ))}
     </div>
   );

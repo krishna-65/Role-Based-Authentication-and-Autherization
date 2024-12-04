@@ -13,15 +13,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path='/' element={<Dashboard />} />
-        {/* <Route
-          path="/admin"
-          element={<ProtectedRoute roles={['Admin']}><AdminPage /></ProtectedRoute>}
-        />
-        <Route
-          path="/user"
-          element={<ProtectedRoute roles={['User']}><UserPage /></ProtectedRoute>}
-        /> */}
-
       </Routes>
 
 

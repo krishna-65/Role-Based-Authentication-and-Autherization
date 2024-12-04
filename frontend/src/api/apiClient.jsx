@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3000/api', // Replace with your backend URL
+  baseURL: 'https://role-based-authentication-and-ktpg.onrender.com/api', // Replace with your backend URL
   headers: { 'Content-Type': 'application/json' },
 });
 
