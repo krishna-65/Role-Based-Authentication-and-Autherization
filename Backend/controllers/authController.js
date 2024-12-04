@@ -40,6 +40,7 @@ exports.login = async (req, res) => {
         //fetch data
         const { email, password } = req.body;
 
+        console.log(req.body);
         //if data not found
         if(!email ||!password){
             return res.status(400).json({ message: 'Please provide email and password' });
@@ -49,7 +50,7 @@ exports.login = async (req, res) => {
         //check user is exist or not
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: 'Email is not registered' });
-
+        console.log(user)
         //if user exists compare the passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
